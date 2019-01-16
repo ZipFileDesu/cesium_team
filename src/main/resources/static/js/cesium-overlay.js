@@ -71,7 +71,7 @@ function getBaseLayerList() {
                 // если статус 200 (ОК) - выдать ответ пользователю
                 //alert("Ответ сервера: " + req.responseText);
                 //console.log(req.responseText);
-                startBaseLayerAnimation(JSON.parse(req.responseText));
+                layersAnimation.start(viewer, JSON.parse(req.responseText));
             }
             // тут можно добавить else с обработкой ошибок запроса
         }
@@ -85,39 +85,6 @@ function getBaseLayerList() {
 
     // (3)
     req.send(null);  // отослать запрос
-}
-
-function startBaseLayerAnimation(baseLayers) {
-    var layersArray2 = [];
-    var layers2 = viewer.imageryLayers;
-    stopAnimationFlg = false;
-
-    sleep(1000);
-    for (var i = 0; i < baseLayers.length; i++) {
-        layersArray2.push(layers2.addImageryProvider(new Cesium.SingleTileImageryProvider({
-            url: baseLayers[i].path + "/" + baseLayers[i].name,
-            rectangle: Cesium.Rectangle.fromDegrees(-180, -90, 180, 90)
-        })));
-    }
-
-    var counter = 0;
-    var refreshIntervalId = setInterval(function(){
-        layers2.raiseToTop(layersArray2[counter]);
-
-        counter++;
-        if( counter === layersArray2.length-1 ) {
-            counter = 0;
-        }
-        if ( stopAnimationFlg ) {
-            clearInterval(refreshIntervalId);
-        }
-    }, 125);
-}
-
-var stopAnimationFlg = false;
-
-function stopAnimation() {
-    stopAnimationFlg = true;
 }
 
 // Grant your CesiumJS app access to your ion assets
@@ -175,7 +142,7 @@ Sandcastle.addToolbarMenu([{
 }, {
     text : 'Stop Animation',
     onselect : function ( ) {
-        stopAnimation();
+        layersAnimation.stop();
         Sandcastle.highlight(stopAnimation);
     }
 }]);
