@@ -55,7 +55,7 @@ function getArtefactsList() {
 }
 
 // javascript-код получения подложек
-function getBaseLayerList() {
+function getBaseLayerList(callback) {
     // (1) создать объект для запроса к серверу
     var req = getXmlHttp();
 
@@ -71,7 +71,7 @@ function getBaseLayerList() {
                 // если статус 200 (ОК) - выдать ответ пользователю
                 //alert("Ответ сервера: " + req.responseText);
                 //console.log(req.responseText);
-                layersAnimation.start(viewer, JSON.parse(req.responseText));
+                callback(viewer, JSON.parse(req.responseText));
             }
             // тут можно добавить else с обработкой ошибок запроса
         }
@@ -130,8 +130,16 @@ Sandcastle.addToolbarMenu([{
     text : 'Start animation',
     onselect : function() {
         addPoint();
-        getBaseLayerList();
-        Sandcastle.highlight(getBaseLayerList);
+        layersAnimation.start();
+        // getBaseLayerList();
+        // Sandcastle.highlight(getBaseLayerList);
+    }
+}, {
+    text : 'Init animation',
+    onselect : function() {
+        addPoint();
+        getBaseLayerList(layersAnimation.init);
+        // Sandcastle.highlight(getBaseLayerList);
     }
 }, {
     text : 'Get Artifacts',
@@ -143,7 +151,7 @@ Sandcastle.addToolbarMenu([{
     text : 'Stop Animation',
     onselect : function ( ) {
         layersAnimation.stop();
-        Sandcastle.highlight(stopAnimation);
+        // Sandcastle.highlight(stopAnimation);
     }
 }]);
 
