@@ -43,16 +43,17 @@
                 <td>Frame rate</td>
                 <td>
                     <input type="range" min="1" max="30" step="1" data-bind="value: frameRate, valueUpdate: 'input'"
-                           onchange="layersAnimationController.changeFrameRate(this)">
-                    <input type="text" size="5" data-bind="value: frameRate" onchange="layersAnimationController.changeFrameRate(this)">
+                           oninput="layersAnimationController.changeFrameRate(this)">
+                    <input type="text" size="5" data-bind="value: frameRate">
                 </td>
             </tr>
 
             <tr>
                 <td>Frame index</td>
                 <td>
-                    <input type="range" min="1" max="1" step="1" data-bind="value: frameIdx, valueUpdate: 'input'">
-                    <input type="text" size="5"  data-bind="value: frameIdx">
+                    <input type="range" min="1" max="1" step="1" data-bind="value: frameIdx, valueUpdate: 'input'"
+                           id="frameIdxRangeInput" oninput="layersAnimationController.changeFrameIdx(this)">
+                    <input type="text" size="5" data-bind="value: frameIdx" id="frameIdxTextInput">
                 </td>
             </tr>
             </tbody></table>
@@ -62,17 +63,17 @@
                     <button name="button" id="animationStartPauseBtn"
                             onclick="layersAnimationController.animationStartPauseBtnClick(this)">Play</button>
                 </td><td>
-                <button name="button" onclick="layersAnimationController.animationStopBtn()">Stop</button>
-            </td><td>
-                <button name="button" onclick="layersAnimationController.animationLeftRightFrame(-1)">Left</button>
-            </td><td>
-                <button name="button" onclick="layersAnimationController.animationLeftRightFrame(+1)">Right</button>
-            </td><td>
-                <p><input type="checkbox" id="reverse" name="reverse" onclick="layersAnimationController.toggleDirection(this)">
+                    <button name="button" onclick="layersAnimationController.animationStopBtn()">Stop</button>
+                </td><td>
+                    <button name="button" onclick="layersAnimationController.animationLeftRightFrame(-1)">Left</button>
+                </td><td>
+                    <button name="button" onclick="layersAnimationController.animationLeftRightFrame(+1)">Right</button>
+                </td><td>
+                    <p><input type="checkbox" id="reverse" name="reverse" onclick="layersAnimationController.toggleDirection(this)">
                     Reverse</p>
-            </td>
-            </tr>
-            </tbody></table>
+                </td>
+            </tr></tbody>
+        </table>
     </div>
 
     <progress value="0" max="1" id="layersAnimationProgressBar" style="display:none"></progress>

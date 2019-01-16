@@ -51,11 +51,26 @@ var layersAnimationController = (function(){
 
     function changeFrameRate(self) {
         layersAnimation.changeFrameRate(self.value);
-        console.log(self.value);
+        // console.log(self.value);
+    }
+
+    function changeFrameIdx(self) {
+        layersAnimation.forceChangeFrameIdx(self.value - 1);
+    }
+
+    function setFrameIdxMax(value) {
+        document.getElementById('frameIdxRangeInput').max = value;
+    }
+
+    function setFrameIdxValue(value) {
+        document.getElementById('frameIdxRangeInput').value = value + 1;
+        document.getElementById('frameIdxTextInput').value = value + 1;
     }
 
     function initAnimationToolbar(layersList) {
-        layersAnimationController.setProgressBarMax(layersList.length);
+        setProgressBarMax(layersList.length);
+        setFrameIdxMax(layersList.length);
+
         layersAnimation.init(viewer, layersList,
             layersAnimationController.setProgressBarValue,
             function() {
@@ -63,6 +78,7 @@ var layersAnimationController = (function(){
                 showToolbar();
             },
             animationStartPauseBtnToggle,
+            setFrameIdxValue,
             toolbarViewModel.frameRate);
     }
 
@@ -96,11 +112,14 @@ var layersAnimationController = (function(){
         animationLeftRightFrame: animationLeftRightFrame,
         toggleDirection: toggleDirection,
         changeFrameRate: changeFrameRate,
+        changeFrameIdx: changeFrameIdx,
+        setFrameIdxValue: setFrameIdxValue,
+
+        initAnimationToolbar: initAnimationToolbar,
         setProgressBarMax: setProgressBarMax,
         setProgressBarValue: setProgressBarValue,
         showProgressBar: showProgressBar,
         hideProgressBar: hideProgressBar,
-        initAnimationToolbar: initAnimationToolbar,
         showToolbar: showToolbar,
         hideToolbar: hideToolbar,
         bindToolbarData: bindToolbarData,

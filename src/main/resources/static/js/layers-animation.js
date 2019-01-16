@@ -14,12 +14,13 @@ var layersAnimation = (function() {
 
     var frameRate;
     var frameRateChangedFlg;
+    var frameIdxCallback;
 
     var layersArray;
     var viewerImageryLayers;
 
     function init(viewer, baseLayers, loadProgressCallback = function(){}, loadFinishCallback = function(){},
-                  _startPauseCallback = function(){}, _frameRate = 10) {
+                  _startPauseCallback = function(){}, _frameIdxCallback = function(){}, _frameRate = 10) {
         stepDirection = 1;
         currentLayerIdx = 0;
 
@@ -30,6 +31,7 @@ var layersAnimation = (function() {
 
         frameRate = _frameRate;
         frameRateChangedFld = false;
+        frameIdxCallback = _frameIdxCallback;
 
         layersArray = [];
         viewerImageryLayers = viewer.imageryLayers;
@@ -69,10 +71,12 @@ var layersAnimation = (function() {
                 var index = i;
                 curLayerPromise = layersArray[i].imageryProvider.readyPromise;
                 curLayerPromise.then(function() {
+                    ++layersLoadedCnt
                     console.log('layer # ' + index);
                     console.log('total layers loaded: ' + layersLoadedCnt);
 
-                    loadProgressCallback(++layersLoadedCnt);
+                    loadProgressCallback(layersLoadedCnt);
+
                     // all images have been loaded
                     if (layersLoadedCnt == baseLayers.length) {
                         setLayersAlpha(1);
@@ -101,6 +105,7 @@ var layersAnimation = (function() {
         if (currentLayerIdx < 0) {
             currentLayerIdx = layersArray.length - 1;
         }
+        frameIdxCallback(currentLayerIdx);
     }
 
     function shiftFrame(shift) {
@@ -115,6 +120,11 @@ var layersAnimation = (function() {
         else {
             callback();
         }
+    }
+
+    function forceChangeFrameIdx(index) {
+        currentLayerIdx = index;
+        showFrame();
     }
 
     function toggleDirection(direction) {
@@ -138,6 +148,7 @@ var layersAnimation = (function() {
         }
         else {
             currentLayerIdx = 0;
+            frameIdxCallback(0);
             showFrame();
         }
     }
@@ -193,5 +204,6 @@ var layersAnimation = (function() {
         shiftFrame: shiftFrame,
         toggleDirection: toggleDirection,
         changeFrameRate: changeFrameRate,
+        forceChangeFrameIdx: forceChangeFrameIdx,
     }
 })();
