@@ -21,8 +21,6 @@ var layersAnimation = (function() {
 
     function init(viewer, baseLayers, loadProgressCallback = function(){}, loadFinishCallback = function(){},
                   _startPauseCallback = function(){}, _frameIdxCallback = function(){}, _frameRate = 10) {
-        stepDirection = 1;
-        currentLayerIdx = 0;
 
         pauseAnimationFlg = false;
         stopAnimationFlg = false;
@@ -32,9 +30,9 @@ var layersAnimation = (function() {
         frameRate = _frameRate;
         frameRateChangedFld = false;
         frameIdxCallback = _frameIdxCallback;
-
-        layersArray = [];
-        viewerImageryLayers = viewer.imageryLayers;
+        
+        console.log('init');
+        console.log(viewerImageryLayers);
 
         if (!layersLoadedFlg) {
             load(baseLayers, loadProgressCallback, loadFinishCallback);
@@ -57,6 +55,9 @@ var layersAnimation = (function() {
         layersLoadedCnt = 0;
         layersArray = [];
         viewerImageryLayers = viewer.imageryLayers;
+
+        stepDirection = 1;
+        currentLayerIdx = 0;
 
         for (var i = 0; i < baseLayers.length; i++) {
             layersArray.push(viewerImageryLayers.addImageryProvider(new Cesium.SingleTileImageryProvider({
@@ -82,6 +83,7 @@ var layersAnimation = (function() {
                         setLayersAlpha(1);
                         layersLoadedFlg = true;
                         console.log('all layers have been loaded');
+                        console.log(viewerImageryLayers);
                         loadFinishCallback();
                     }
                 });
@@ -176,7 +178,7 @@ var layersAnimation = (function() {
                 frameRateChangedFlg = false;
                 animate();
             }
-            if (pauseAnimationFlg) {
+            else if (pauseAnimationFlg) {
                 clearInterval(refreshIntervalId);
                 animationActiveFlg = false;
                 if (pauseCallback && typeof pauseCallback === 'function') {
@@ -184,14 +186,17 @@ var layersAnimation = (function() {
                     pauseCallback = null;
                 }
             }
-            if (stopAnimationFlg) {
+            else if (stopAnimationFlg) {
                 clearInterval(refreshIntervalId);
                 animationActiveFlg = false;
                 currentLayerIdx = 0;
+                frameIdxCallback(0);
                 showFrame();
             }
-            nextFrame();
-            showFrame();
+            else {
+                nextFrame();
+                showFrame();
+            }
         }, 1000 / frameRate);
     }
 
