@@ -90,7 +90,35 @@ function getBaseLayerList() {
 // Grant your CesiumJS app access to your ion assets
 // This is your actual default access token, you can copy/paste this directly into your app code
 Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJjOGZiMDIxMi02NzYwLTQ5MzgtOTk0ZC02YTJiYWU5MTQyODUiLCJpZCI6MjE0MSwiaWF0IjoxNTMxNzI3NzUzfQ.cRJYZ0l7AOiA2BcvqzY-Z4kIJcyZd2G-ygod2Dw9ZtA';
+
 var viewer = new Cesium.Viewer("cesiumContainer");
+var imageryLayers = viewer.imageryLayers;
+
+var viewModel = {
+    framerate: 1,
+    frameIndex: 1
+};
+
+var toolbarAnimation = document.getElementById('toolbarAnimation');
+Cesium.knockout.track(viewModel);
+Cesium.knockout.applyBindings(viewModel, toolbarAnimation);
+
+toolbarAnimation.style.display = 'none';
+
+/*function subscribeLayerParameter(name) {
+    Cesium.knockout.getObservable(viewModel, name).subscribe(
+        function(newValue) {
+            if (imageryLayers.length > 0) {
+                var layer = imageryLayers.get(0);
+                layer[name] = newValue;
+            }
+        }
+    );
+}
+
+subscribeLayerParameter('framerate');
+subscribeLayerParameter('contrast');
+*/
 
 function addPoint() {
     Sandcastle.declare(addPoint);
@@ -118,6 +146,7 @@ function addPoint() {
     });
 }
 
+
 addPoint();
 
 Sandcastle.addToolbarMenu([{
@@ -125,6 +154,7 @@ Sandcastle.addToolbarMenu([{
     onselect : function() {
         addPoint();
         Sandcastle.highlight(addPoint);
+        toolbarAnimation.style.display = 'none';
     }
 }, {
     text : 'Start animation',
@@ -132,18 +162,26 @@ Sandcastle.addToolbarMenu([{
         addPoint();
         getBaseLayerList();
         Sandcastle.highlight(getBaseLayerList);
+        toolbarAnimation.style.display = 'none';
+    }
+}, {
+    text : 'Animation',
+    onselect : function() {
+        toolbarAnimation.style.display = 'block';
     }
 }, {
     text : 'Get Artifacts',
     onselect : function ( ) {
         getArtefactsList();
         Sandcastle.highlight(getArtefactsList);
+        toolbarAnimation.style.display = 'none';
     }
 }, {
     text : 'Stop Animation',
     onselect : function ( ) {
         layersAnimation.stop();
         Sandcastle.highlight(stopAnimation);
+        toolbarAnimation.style.display = 'none';
     }
 }]);
 
