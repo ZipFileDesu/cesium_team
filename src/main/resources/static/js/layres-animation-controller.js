@@ -104,6 +104,8 @@ var layersAnimationController = (function(){
 
     function hideToolbar() {
         toolbar.style.display = 'none';
+        layersAnimation.stop();
+        layersAnimation.setLayersAlpha(0);
     }
 
     return {

@@ -30,7 +30,7 @@ var layersAnimation = (function() {
         frameRate = _frameRate;
         frameRateChangedFld = false;
         frameIdxCallback = _frameIdxCallback;
-        
+
         console.log('init');
         console.log(viewerImageryLayers);
 
@@ -210,5 +210,6 @@ var layersAnimation = (function() {
         toggleDirection: toggleDirection,
         changeFrameRate: changeFrameRate,
         forceChangeFrameIdx: forceChangeFrameIdx,
+        setLayersAlpha: setLayersAlpha,
     }
 })();
