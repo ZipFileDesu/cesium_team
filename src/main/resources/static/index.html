@@ -38,7 +38,7 @@
 <div id="cesiumContainer" class="fullSize"></div>
 <div id="loadingOverlay"><h1>Loading...</h1></div>
 <div id="toolbar">
-    <div id="toolbarAnimation">
+    <div id="toolbarAnimation" style="display:none">
         <table>
             <tbody><tr>
                 <td>Framerate</td>
@@ -73,6 +73,7 @@
             </tr>
             </tbody></table>
     </div>
+    <progress value="0" max="1" id="animationLayersProgressBar" style="display:none"></progress>
 </div>
 
 <script src="js/layers-animation.js"></script>

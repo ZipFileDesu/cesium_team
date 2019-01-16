@@ -17,7 +17,7 @@ var layersAnimation = (function() {
     var layersArray;
     var viewerImageryLayers;
 
-    function init(viewer, baseLayers, _frameRate = 10, callback = function(){}) {
+    function init(viewer, baseLayers, loadProgressCallback = function(){}, loadFinishCallback = function(){}, _frameRate = 10) {
         stepDirection = 1;
         currentLayerIdx = 0;
 
@@ -32,12 +32,12 @@ var layersAnimation = (function() {
         viewerImageryLayers = viewer.imageryLayers;
 
         if (!layersLoadedFlg) {
-            load(baseLayers, callback);
+            load(baseLayers, loadProgressCallback, loadFinishCallback);
         }
         else {
             setLayersAlpha(1);
             showFrame();
-            callback();
+            loadFinishCallback();
         }
     }
 
@@ -48,7 +48,7 @@ var layersAnimation = (function() {
         }
     }
 
-    function load(baseLayers, callback) {
+    function load(baseLayers, loadProgressCallback, loadFinishCallback) {
         layersLoadedCnt = 0;
         layersArray = [];
         viewerImageryLayers = viewer.imageryLayers;
@@ -69,12 +69,13 @@ var layersAnimation = (function() {
                     console.log('layer # ' + index);
                     console.log('total layers loaded: ' + layersLoadedCnt);
 
+                    loadProgressCallback(++layersLoadedCnt);
                     // all images have been loaded
-                    if (++layersLoadedCnt == baseLayers.length) {
+                    if (layersLoadedCnt == baseLayers.length) {
                         setLayersAlpha(1);
                         layersLoadedFlg = true;
                         console.log('all layers have been loaded');
-                        callback();
+                        loadFinishCallback();
                     }
                 });
             })();

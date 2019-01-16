@@ -30,11 +30,32 @@ var layersAnimationController = (function(){
         console.log(self.value);
     }
 
+    function setProgressBarMax(value){
+        document.getElementById("animationLayersProgressBar").max = value;
+    }
+
+    function setProgressBarValue(value){
+        document.getElementById("animationLayersProgressBar").value = value;
+    }
+
+    function showProgressBar(){
+        document.getElementById("animationLayersProgressBar").style.display = 'block';
+    }
+
+    function hideProgressBar(){
+        document.getElementById("animationLayersProgressBar").style.display = 'none';
+        toolbarAnimation.style.display = 'block';
+    }
+
     return {
         animationStartPauseBtn: animationStartPauseBtn,
         animationStopBtn: animationStopBtn,
         animationLeftRightFrame: animationLeftRightFrame,
         toggleDirection: toggleDirection,
         changeFrameRate: changeFrameRate,
+        setProgressBarMax: setProgressBarMax,
+        setProgressBarValue: setProgressBarValue,
+        showProgressBar: showProgressBar,
+        hideProgressBar: hideProgressBar,
     };
 })();

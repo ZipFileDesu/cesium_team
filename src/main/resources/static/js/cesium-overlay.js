@@ -55,7 +55,7 @@ function getArtefactsList() {
 }
 
 // javascript-код получения подложек
-function getBaseLayerList(callback) {
+function getBaseLayerList(initAnimationCallback) {
     // (1) создать объект для запроса к серверу
     var req = getXmlHttp();
 
@@ -71,7 +71,10 @@ function getBaseLayerList(callback) {
                 // если статус 200 (ОК) - выдать ответ пользователю
                 //alert("Ответ сервера: " + req.responseText);
                 //console.log(req.responseText);
-                callback(viewer, JSON.parse(req.responseText));
+                baseLayerList = JSON.parse(req.responseText);
+                layersAnimationController.setProgressBarMax(baseLayerList.length);
+                initAnimationCallback(viewer, baseLayerList, layersAnimationController.setProgressBarValue,
+                    layersAnimationController.hideProgressBar);
             }
             // тут можно добавить else с обработкой ошибок запроса
         }
@@ -93,6 +96,7 @@ Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOi
 
 var viewer = new Cesium.Viewer("cesiumContainer");
 var imageryLayers = viewer.imageryLayers;
+viewer.scene.debugShowFramesPerSecond = true;
 
 var viewModel = {
     framerate: 1,
@@ -102,8 +106,6 @@ var viewModel = {
 var toolbarAnimation = document.getElementById('toolbarAnimation');
 Cesium.knockout.track(viewModel);
 Cesium.knockout.applyBindings(viewModel, toolbarAnimation);
-
-toolbarAnimation.style.display = 'none';
 
 /*function subscribeLayerParameter(name) {
     Cesium.knockout.getObservable(viewModel, name).subscribe(
@@ -159,9 +161,8 @@ Sandcastle.addToolbarMenu([{
 }, {
     text: 'Animation',
     onselect: function () {
-        // TODO: add loading progress bar
+        layersAnimationController.showProgressBar();
         getBaseLayerList(layersAnimation.init);
-        toolbarAnimation.style.display = 'block';
     }
 }, {
     text : 'Get Artifacts',
