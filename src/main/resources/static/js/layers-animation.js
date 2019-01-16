@@ -10,6 +10,7 @@ var layersAnimation = (function() {
     var stopAnimationFlg;
     var animationActiveFlg;
     var pauseCallback;
+    var startPauseCallback;
 
     var frameRate;
     var frameRateChangedFlg;
@@ -17,13 +18,15 @@ var layersAnimation = (function() {
     var layersArray;
     var viewerImageryLayers;
 
-    function init(viewer, baseLayers, loadProgressCallback = function(){}, loadFinishCallback = function(){}, _frameRate = 10) {
+    function init(viewer, baseLayers, loadProgressCallback = function(){}, loadFinishCallback = function(){},
+                  _startPauseCallback = function(){}, _frameRate = 10) {
         stepDirection = 1;
         currentLayerIdx = 0;
 
         pauseAnimationFlg = false;
         stopAnimationFlg = false;
         animationActiveFlg = false;
+        startPauseCallback = _startPauseCallback;
 
         frameRate = _frameRate;
         frameRateChangedFld = false;
@@ -83,7 +86,6 @@ var layersAnimation = (function() {
     }
 
     function showFrame(index=currentLayerIdx) {
-        console.log('default: ' + currentLayerIdx);
         console.log('show frame ' + index);
         if (0 <= index && index < layersArray.length) {
             console.log('raise to top frame ' + index);
@@ -106,10 +108,9 @@ var layersAnimation = (function() {
             nextFrame(shift);
             showFrame();
         };
-
         if (animationActiveFlg) {
             pauseCallback = callback;
-            pauseAnimationFlg = true;
+            pause();
         }
         else {
             callback();
@@ -120,16 +121,20 @@ var layersAnimation = (function() {
         stepDirection = -stepDirection;
     }
 
-    function start() {
+    function start(throwCallbackFlg = true) {
         pauseAnimationFlg = false;
         stopAnimationFlg = false;
         frameRateChangedFlg = false;
+        if (throwCallbackFlg) {
+            startPauseCallback('pause');
+        }
         animate();
     }
 
     function stop() {
         if (animationActiveFlg) {
             stopAnimationFlg = true;
+            startPauseCallback('start');
         }
         else {
             currentLayerIdx = 0;
@@ -137,12 +142,15 @@ var layersAnimation = (function() {
         }
     }
 
-    function pause() {
+    function pause(throwCallbackFlg = true) {
         pauseAnimationFlg = true;
+        if (throwCallbackFlg) {
+            startPauseCallback('start');
+        }
     }
 
     function changeFrameRate(_frameRate) {
-        framerate = _framerate;
+        frameRate = _frameRate;
         frameRateChangedFlg = true;
     }
 
@@ -154,6 +162,7 @@ var layersAnimation = (function() {
             if (frameRateChangedFlg) {
                 clearInterval(refreshIntervalId);
                 animationActiveFlg = false;
+                frameRateChangedFlg = false;
                 animate();
             }
             if (pauseAnimationFlg) {

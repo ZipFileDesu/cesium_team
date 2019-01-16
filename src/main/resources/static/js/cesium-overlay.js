@@ -94,6 +94,7 @@ Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOi
 var viewer = new Cesium.Viewer("cesiumContainer");
 var imageryLayers = viewer.imageryLayers;
 viewer.scene.debugShowFramesPerSecond = true;
+layersAnimationController.bindToolbarData();
 
 function addPoint() {
     Sandcastle.declare(addPoint);
