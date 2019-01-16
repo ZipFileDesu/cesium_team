@@ -33,14 +33,51 @@
 <style>
     @import url(Cesium/Apps/Sandcastle/templates/bucket.css);
 </style>
+
+
 <div id="cesiumContainer" class="fullSize"></div>
 <div id="loadingOverlay"><h1>Loading...</h1></div>
-<div id="toolbar"></div>
-<!--<div id="animation-button" style="position: fixed; top: 80px; left: 10px;">
-    <button type="button" onclick="getBaseLayerList()">Start animation</button>
-    <button type="button" onclick="getArtefactsList()">Get artefacts</button>
-</div>-->
+<div id="toolbar">
+    <div id="toolbarAnimation">
+        <table>
+            <tbody><tr>
+                <td>Framerate</td>
+                <td>
+                    <input type="range" min="1" max="50" step="1" data-bind="value: framerate, valueUpdate: 'input'" onchange="layersAnimationController.changeFrameRate(this)">
+                    <input type="text" size="5" data-bind="value: framerate" onchange="layersAnimationController.changeFrameRate(this)">
+                </td>
+            </tr>
+
+            <tr>
+                <td>Frame Index</td>
+                <td>
+                    <input type="range" min="1" max="1" step="1" data-bind="value: frameIndex, valueUpdate: 'input'">
+                    <input type="text" size="5" data-bind="value: frameIndex">
+                </td>
+            </tr>
+            </tbody></table>
+        <table>
+            <tbody><tr>
+                <td>
+                    <button name="button" onclick="layersAnimationController.animationStartPauseBtn(this)">Play</button>
+                </td><td>
+                <button name="button" onclick="layersAnimationController.animationStopBtn()">Stop</button>
+            </td><td>
+                <button name="button" onclick="layersAnimationController.animationLeftRightFrame(-1)">Left</button>
+            </td><td>
+                <button name="button" onclick="layersAnimationController.animationLeftRightFrame(+1)">Right</button>
+            </td><td>
+                <p><input type="checkbox" id="reverse" name="reverse" onclick="layersAnimationController.toggleDirection(this)">
+                    Reverse</p>
+            </td>
+            </tr>
+            </tbody></table>
+    </div>
+</div>
+
 <script src="js/layers-animation.js"></script>
+<script src="js/layres-animation-controller.js"></script>
 <script src="js/cesium-overlay.js"></script>
+
 </body>
 </html>
