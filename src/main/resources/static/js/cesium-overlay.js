@@ -55,7 +55,7 @@ function getArtefactsList() {
 }
 
 // javascript-код получения подложек
-function getBaseLayerList(initAnimationCallback) {
+function getBaseLayerList() {
     // (1) создать объект для запроса к серверу
     var req = getXmlHttp();
 
@@ -67,14 +67,11 @@ function getBaseLayerList(initAnimationCallback) {
 
             //statusElem.innerHTML = req.statusText // показать статус (Not Found, ОК..)
 
-            if(req.status === 200) {
+            if (req.status === 200) {
                 // если статус 200 (ОК) - выдать ответ пользователю
                 //alert("Ответ сервера: " + req.responseText);
                 //console.log(req.responseText);
-                baseLayerList = JSON.parse(req.responseText);
-                layersAnimationController.setProgressBarMax(baseLayerList.length);
-                initAnimationCallback(viewer, baseLayerList, layersAnimationController.setProgressBarValue,
-                    layersAnimationController.hideProgressBar);
+                layersAnimationController.initAnimationToolbar(JSON.parse(req.responseText));
             }
             // тут можно добавить else с обработкой ошибок запроса
         }
@@ -97,30 +94,6 @@ Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOi
 var viewer = new Cesium.Viewer("cesiumContainer");
 var imageryLayers = viewer.imageryLayers;
 viewer.scene.debugShowFramesPerSecond = true;
-
-var viewModel = {
-    framerate: 1,
-    frameIndex: 1
-};
-
-var toolbarAnimation = document.getElementById('toolbarAnimation');
-Cesium.knockout.track(viewModel);
-Cesium.knockout.applyBindings(viewModel, toolbarAnimation);
-
-/*function subscribeLayerParameter(name) {
-    Cesium.knockout.getObservable(viewModel, name).subscribe(
-        function(newValue) {
-            if (imageryLayers.length > 0) {
-                var layer = imageryLayers.get(0);
-                layer[name] = newValue;
-            }
-        }
-    );
-}
-
-subscribeLayerParameter('framerate');
-subscribeLayerParameter('contrast');
-*/
 
 function addPoint() {
     Sandcastle.declare(addPoint);
@@ -148,33 +121,30 @@ function addPoint() {
     });
 }
 
-
 addPoint();
 
 Sandcastle.addToolbarMenu([{
     text : 'Add point',
     onselect : function() {
+        layersAnimationController.hideToolbar();
         addPoint();
         Sandcastle.highlight(addPoint);
-        toolbarAnimation.style.display = 'none';
     }
 }, {
     text: 'Animation',
     onselect: function () {
         layersAnimationController.showProgressBar();
-        getBaseLayerList(layersAnimation.init);
+        getBaseLayerList();
     }
 }, {
     text : 'Get Artifacts',
     onselect : function ( ) {
+        layersAnimationController.hideToolbar();
         getArtefactsList();
         Sandcastle.highlight(getArtefactsList);
-        toolbarAnimation.style.display = 'none';
     }
 }]);
 
 Sandcastle.reset = function () {
     viewer.entities.removeAll();
 };
-
-//getBaseLayerList();

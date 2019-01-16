@@ -1,5 +1,8 @@
 var layersAnimationController = (function(){
 
+    var toolbar = document.getElementById('animationToolbar');
+    var progressBar = document.getElementById('layersAnimationProgressBar');
+
     var startPauseStatus = 0; // 0 - Start, 1 - Pause
     function animationStartPauseBtn(self) {
         console.log(self);
@@ -18,33 +21,49 @@ var layersAnimationController = (function(){
         layersAnimation.stop();
     }
 
-    function animationLeftRightFrame(shift){
+    function animationLeftRightFrame(shift) {
         layersAnimation.shiftFrame(shift);
     }
 
-    function toggleDirection(self){
+    function toggleDirection(self) {
         layersAnimation.toggleDirection(self.checked);
     }
 
-    function changeFrameRate(self){
+    function changeFrameRate(self) {
         console.log(self.value);
     }
 
-    function setProgressBarMax(value){
-        document.getElementById("animationLayersProgressBar").max = value;
+    function initAnimationToolbar(layersList) {
+        layersAnimationController.setProgressBarMax(layersList.length);
+        layersAnimation.init(viewer, layersList, layersAnimationController.setProgressBarValue,
+            function() {
+                hideProgressBar();
+                showToolbar();
+            });
     }
 
-    function setProgressBarValue(value){
-        document.getElementById("animationLayersProgressBar").value = value;
+    function setProgressBarMax(value) {
+        progressBar.max = value;
     }
 
-    function showProgressBar(){
-        document.getElementById("animationLayersProgressBar").style.display = 'block';
+    function setProgressBarValue(value) {
+        progressBar.value = value;
     }
 
-    function hideProgressBar(){
-        document.getElementById("animationLayersProgressBar").style.display = 'none';
-        toolbarAnimation.style.display = 'block';
+    function showProgressBar() {
+        progressBar.style.display = 'block';
+    }
+
+    function hideProgressBar() {
+        progressBar.style.display = 'none';
+    }
+
+    function showToolbar() {
+        toolbar.style.display = 'block';
+    }
+
+    function hideToolbar() {
+        toolbar.style.display = 'none';
     }
 
     return {
@@ -57,5 +76,8 @@ var layersAnimationController = (function(){
         setProgressBarValue: setProgressBarValue,
         showProgressBar: showProgressBar,
         hideProgressBar: hideProgressBar,
+        initAnimationToolbar: initAnimationToolbar,
+        showToolbar: showToolbar,
+        hideToolbar: hideToolbar,
     };
 })();

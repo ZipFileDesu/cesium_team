@@ -34,25 +34,24 @@
     @import url(Cesium/Apps/Sandcastle/templates/bucket.css);
 </style>
 
-
 <div id="cesiumContainer" class="fullSize"></div>
 <div id="loadingOverlay"><h1>Loading...</h1></div>
 <div id="toolbar">
-    <div id="toolbarAnimation" style="display:none">
+    <div id="animationToolbar" style="display:none">
         <table>
             <tbody><tr>
-                <td>Framerate</td>
+                <td>Frame rate</td>
                 <td>
                     <input type="range" min="1" max="50" step="1" data-bind="value: framerate, valueUpdate: 'input'" onchange="layersAnimationController.changeFrameRate(this)">
-                    <input type="text" size="5" data-bind="value: framerate" onchange="layersAnimationController.changeFrameRate(this)">
+                    <input type="text" size="5" onchange="layersAnimationController.changeFrameRate(this)">
                 </td>
             </tr>
 
             <tr>
-                <td>Frame Index</td>
+                <td>Frame index</td>
                 <td>
-                    <input type="range" min="1" max="1" step="1" data-bind="value: frameIndex, valueUpdate: 'input'">
-                    <input type="text" size="5" data-bind="value: frameIndex">
+                    <input type="range" min="1" max="1" step="1">
+                    <input type="text" size="5">
                 </td>
             </tr>
             </tbody></table>
@@ -73,7 +72,8 @@
             </tr>
             </tbody></table>
     </div>
-    <progress value="0" max="1" id="animationLayersProgressBar" style="display:none"></progress>
+
+    <progress value="0" max="1" id="layersAnimationProgressBar" style="display:none"></progress>
 </div>
 
 <script src="js/layers-animation.js"></script>

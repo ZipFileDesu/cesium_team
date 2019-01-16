@@ -128,7 +128,13 @@ var layersAnimation = (function() {
     }
 
     function stop() {
-        stopAnimationFlg = true;
+        if (animationActiveFlg) {
+            stopAnimationFlg = true;
+        }
+        else {
+            currentLayerIdx = 0;
+            showFrame();
+        }
     }
 
     function pause() {
