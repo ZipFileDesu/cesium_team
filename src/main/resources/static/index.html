@@ -27,6 +27,26 @@
             padding: 0;
             overflow: hidden;
         }
+
+        #toolbar {
+            background: rgba(42, 42, 42, 0.8);
+            padding: 4px;
+            border-radius: 4px;
+        }
+        #toolbar input {
+            vertical-align: middle;
+            padding-top: 2px;
+            padding-bottom: 2px;
+        }
+        #toolbar .header {
+            font-weight: bold;
+        }
+
+        .range-width300
+        {
+            width: 300px;
+        }
+
     </style>
 </head>
 <body>
@@ -42,7 +62,7 @@
             <tbody><tr>
                 <td>Frame rate</td>
                 <td>
-                    <input type="range" min="1" max="30" step="1" data-bind="value: frameRate, valueUpdate: 'input'"
+                    <input class="range-width300" type="range" min="1" max="30" step="1" data-bind="value: frameRate, valueUpdate: 'input'"
                            oninput="layersAnimationController.changeFrameRate(this)">
                     <input type="text" size="5" data-bind="value: frameRate">
                 </td>
@@ -51,7 +71,7 @@
             <tr>
                 <td>Frame index</td>
                 <td>
-                    <input type="range" min="1" max="1" step="1" data-bind="value: frameIdx, valueUpdate: 'input'"
+                    <input class="range-width300" type="range" min="1" max="1" step="1" data-bind="value: frameIdx, valueUpdate: 'input'"
                            id="frameIdxRangeInput" oninput="layersAnimationController.changeFrameIdx(this)">
                     <input type="text" size="5" data-bind="value: frameIdx" id="frameIdxTextInput">
                 </td>
