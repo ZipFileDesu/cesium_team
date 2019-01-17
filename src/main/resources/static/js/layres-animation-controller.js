@@ -112,7 +112,8 @@ var layersAnimationController = (function(){
         toolbar.style.display = 'none';
         layersAnimation.stop();
         // TODO: ??? do we need to clear the added layers, or just hide them?
-        layersAnimation.setLayersAlpha(0);
+        layersAnimation.clearAddedLayers();
+        // layersAnimation.setLayersAlpha(0);
     }
 
     return {

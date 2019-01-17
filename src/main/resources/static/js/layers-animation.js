@@ -16,6 +16,7 @@ var layersAnimation = (function() {
     var layersArray;
     var viewerImageryLayers;
     var fileToLoadedImg = {};
+    var baseLayers
 
     function init(viewer, baseLayers, loadProgressCallback = function(){}, loadFinishCallback = function(){},
                   _startPauseCallback = function(){}, _frameIdxCallback = function(){}, _frameRate = 10) {
@@ -31,7 +32,23 @@ var layersAnimation = (function() {
 
         console.log('layersAnimation init');
         console.log('viewerImageryLayers' + viewerImageryLayers);
+        viewerImageryLayers = viewer;
         load(baseLayers, loadProgressCallback, loadFinishCallback);
+    }
+
+    function clearAddedLayers() {
+        console.log('clearAddedLayers');
+        console.log(viewerImageryLayers);
+
+        for (var i = 0; i < layersArray.length; ++i) {
+            viewerImageryLayers.remove(layersArray[i]);
+        }
+
+        console.log('--- CLEARED');
+        console.log(viewerImageryLayers);
+        console.log(layersArray);
+
+        layersArray = [];
     }
 
     function setLayersAlpha(alpha) {
@@ -44,10 +61,12 @@ var layersAnimation = (function() {
     function loadImages(baseLayers, loadProgressCallback, loadFinishCallback) {
         var imagesLoadedCnt = 0;
         loadProgressCallback(0, 'load_images');
+        console.log(fileToLoadedImg);
 
         for (var i = 0; i < baseLayers.length; i++) {
             var filePath = baseLayers[i].path + "/" + baseLayers[i].name;
-            if (!fileToLoadedImg.hasOwnProperty[filePath]) {
+            if (!(filePath in fileToLoadedImg)) {
+                console.log('file is not in dictionary ' + filePath);
                 var curResource = new Cesium.Resource({
                     url: baseLayers[i].path + "/" + baseLayers[i].name,
                     preferBlob: false
@@ -73,8 +92,13 @@ var layersAnimation = (function() {
                     });
                 })();
             } else {
-                if (++imagesLoadedCnt == baseLayers.length) {
-                    loadProgressCallback(100 * iamagesLoadedCnt / baseLayers.length);
+                ++imagesLoadedCnt;
+                console.log('image taken from cash: ' + imagesLoadedCnt);
+                console.log('total images loaded: ' + imagesLoadedCnt);
+                loadProgressCallback(100 * imagesLoadedCnt / baseLayers.length);
+
+                if (imagesLoadedCnt == baseLayers.length) {
+                    loadFinishCallback();
                 }
             }
         }
@@ -123,9 +147,6 @@ var layersAnimation = (function() {
 
         stepDirection = 1;
         currentLayerIdx = 0;
-
-        layersAddedCnt = 0;
-        promisesLayersReady = [];
 
         loadImages(baseLayers, loadProgressCallback,
             function() {
@@ -253,5 +274,6 @@ var layersAnimation = (function() {
         changeFrameRate: changeFrameRate,
         forceChangeFrameIdx: forceChangeFrameIdx,
         setLayersAlpha: setLayersAlpha,
+        clearAddedLayers: clearAddedLayers,
     }
 })();
