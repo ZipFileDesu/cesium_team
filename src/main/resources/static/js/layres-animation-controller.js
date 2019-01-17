@@ -53,11 +53,12 @@ var layersAnimationController = (function(){
     }
 
     function changeFrameRate(self) {
+        // self.value = min(self.max, max(self.min, self.value));
         layersAnimation.changeFrameRate(self.value);
-        // console.log(self.value);
     }
 
     function changeFrameIdx(self) {
+        // self.value = min(self.max, max(self.min, self.value));
         layersAnimation.forceChangeFrameIdx(self.value - 1);
     }
 

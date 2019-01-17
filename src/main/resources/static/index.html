@@ -79,7 +79,8 @@
                 <td>
                     <input class="range-width300" type="range" min="1" max="30" step="1" data-bind="value: frameRate, valueUpdate: 'input'"
                            oninput="layersAnimationController.changeFrameRate(this)">
-                    <input type="text" size="5" data-bind="value: frameRate">
+                    <input type="number" min="1" max="30" size="5" data-bind="value: frameRate"
+                           oninput="layersAnimationController.changeFrameRate(this)">
                 </td>
             </tr>
 
@@ -88,7 +89,8 @@
                 <td>
                     <input class="range-width300" type="range" min="1" max="1" step="1" data-bind="value: frameIdx, valueUpdate: 'input'"
                            id="frameIdxRangeInput" oninput="layersAnimationController.changeFrameIdx(this)">
-                    <input type="text" size="5" data-bind="value: frameIdx" id="frameIdxTextInput">
+                    <input type="number" min="1" max="1" size="5" data-bind="value: frameIdx" id="frameIdxTextInput"
+                           onchange="layersAnimationController.changeFrameIdx(this)">
                 </td>
             </tr>
             </tbody></table>
