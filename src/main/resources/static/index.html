@@ -47,6 +47,11 @@
             width: 300px;
         }
 
+        .button-size{
+            height:20px;
+            width:60px;
+        }
+
     </style>
 </head>
 <body>
@@ -80,14 +85,14 @@
         <table>
             <tbody><tr>
                 <td>
-                    <button name="button" id="animationStartPauseBtn" style="width:65px"
+                    <button class="button-size" name="button" id="animationStartPauseBtn"
                             onclick="layersAnimationController.animationStartPauseBtnClick(this)">Play</button>
                 </td><td>
-                    <button name="button" onclick="layersAnimationController.animationStopBtn()">Stop</button>
+                    <button class="button-size" name="button" onclick="layersAnimationController.animationStopBtn()">Stop</button>
                 </td><td>
-                    <button name="button" onclick="layersAnimationController.animationLeftRightFrame(-1)">Left</button>
+                    <button class="button-size" name="button" title="Previous frame" onclick="layersAnimationController.animationLeftRightFrame(-1)">Prev</button>
                 </td><td>
-                    <button name="button" onclick="layersAnimationController.animationLeftRightFrame(+1)">Right</button>
+                    <button class="button-size" name="button" title="Next frame" onclick="layersAnimationController.animationLeftRightFrame(+1)">Next</button>
                 </td><td>
                     <p><input type="checkbox" id="reverse" name="reverse" onclick="layersAnimationController.toggleDirection(this)">
                     Reverse</p>
