@@ -1,8 +1,5 @@
 var layersAnimation = (function() {
 
-    var layersLoadedFlg = false;
-    var layersLoadedCnt;
-
     var stepDirection;
     var currentLayerIdx;
 
@@ -18,6 +15,7 @@ var layersAnimation = (function() {
 
     var layersArray;
     var viewerImageryLayers;
+    var fileToLoadedImg = {};
 
     function init(viewer, baseLayers, loadProgressCallback = function(){}, loadFinishCallback = function(){},
                   _startPauseCallback = function(){}, _frameIdxCallback = function(){}, _frameRate = 10) {
@@ -31,17 +29,9 @@ var layersAnimation = (function() {
         frameRateChangedFld = false;
         frameIdxCallback = _frameIdxCallback;
 
-        console.log('init');
-        console.log(viewerImageryLayers);
-
-        if (!layersLoadedFlg) {
-            load(baseLayers, loadProgressCallback, loadFinishCallback);
-        }
-        else {
-            setLayersAlpha(1);
-            showFrame();
-            loadFinishCallback();
-        }
+        console.log('layersAnimation init');
+        console.log('viewerImageryLayers' + viewerImageryLayers);
+        load(baseLayers, loadProgressCallback, loadFinishCallback);
     }
 
     function setLayersAlpha(alpha) {
@@ -51,17 +41,55 @@ var layersAnimation = (function() {
         }
     }
 
-    function load(baseLayers, loadProgressCallback, loadFinishCallback) {
-        layersLoadedCnt = 0;
-        layersArray = [];
-        viewerImageryLayers = viewer.imageryLayers;
-
-        stepDirection = 1;
-        currentLayerIdx = 0;
+    function loadImages(baseLayers, loadProgressCallback, loadFinishCallback) {
+        var imagesLoadedCnt = 0;
+        loadProgressCallback(0, 'load_images');
 
         for (var i = 0; i < baseLayers.length; i++) {
+            var filePath = baseLayers[i].path + "/" + baseLayers[i].name;
+            if (!fileToLoadedImg.hasOwnProperty[filePath]) {
+                var curResource = new Cesium.Resource({
+                    url: baseLayers[i].path + "/" + baseLayers[i].name,
+                    preferBlob: false
+                });
+
+                (function () {
+                    var index = i;
+                    var curFilePath = filePath;
+
+                    curResource.fetchImage().then(function (image) {
+                        fileToLoadedImg[curFilePath] = image;
+                        ++imagesLoadedCnt;
+                        console.log('load file # ' + index);
+                        console.log('total images loaded: ' + imagesLoadedCnt);
+
+                        loadProgressCallback(100 * imagesLoadedCnt / baseLayers.length);
+
+                        // all images have been loaded
+                        if (imagesLoadedCnt == baseLayers.length) {
+                            console.log('all images have been loaded');
+                            loadFinishCallback();
+                        }
+                    });
+                })();
+            } else {
+                if (++imagesLoadedCnt == baseLayers.length) {
+                    loadProgressCallback(100 * iamagesLoadedCnt / baseLayers.length);
+                }
+            }
+        }
+    }
+
+    function loadLayers(baseLayers, loadProgressCallback, loadFinishCallback) {
+        var layersAddedCnt = 0;
+        loadProgressCallback(0, 'add_layers');
+
+        for (var i = 0; i < baseLayers.length; i++) {
+            var filePath = baseLayers[i].path + "/" + baseLayers[i].name;
+            var imgSrc = fileToLoadedImg[filePath].src;
+
             layersArray.push(viewerImageryLayers.addImageryProvider(new Cesium.SingleTileImageryProvider({
-                url: baseLayers[i].path + "/" + baseLayers[i].name,
+                url: imgSrc,
                 rectangle: Cesium.Rectangle.fromDegrees(-180, -90, 180, 90)
             })));
 
@@ -70,25 +98,39 @@ var layersAnimation = (function() {
 
             (function() {
                 var index = i;
-                curLayerPromise = layersArray[i].imageryProvider.readyPromise;
-                curLayerPromise.then(function() {
-                    ++layersLoadedCnt
-                    console.log('layer # ' + index);
-                    console.log('total layers loaded: ' + layersLoadedCnt);
+                layersArray[i].imageryProvider.readyPromise.then(function() {
+                    ++layersAddedCnt;
+                    console.log('add layer # ' + index);
+                    console.log('total layers added: ' + layersAddedCnt);
 
-                    loadProgressCallback(layersLoadedCnt);
+                    loadProgressCallback(100 * layersAddedCnt  / baseLayers.length);
 
                     // all images have been loaded
-                    if (layersLoadedCnt == baseLayers.length) {
+                    if (layersAddedCnt == baseLayers.length) {
                         setLayersAlpha(1);
-                        layersLoadedFlg = true;
-                        console.log('all layers have been loaded');
+                        console.log('all layers have been added');
                         console.log(viewerImageryLayers);
                         loadFinishCallback();
                     }
                 });
             })();
         }
+    }
+
+    function load(baseLayers, loadProgressCallback, loadFinishCallback) {
+        layersArray = [];
+        viewerImageryLayers = viewer.imageryLayers;
+
+        stepDirection = 1;
+        currentLayerIdx = 0;
+
+        layersAddedCnt = 0;
+        promisesLayersReady = [];
+
+        loadImages(baseLayers, loadProgressCallback,
+            function() {
+                loadLayers(baseLayers, loadProgressCallback, loadFinishCallback);
+            });
     }
 
     function showFrame(index=currentLayerIdx) {

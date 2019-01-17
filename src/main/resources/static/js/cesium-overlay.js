@@ -37,7 +37,7 @@ function getArtefactsList() {
             if(req.status === 200) {
                 // если статус 200 (ОК) - выдать ответ пользователю
                 alert("Список артефактов получен: " + req.responseText);
-                //console.log(req.responseText);
+                // console.log(req.responseText);
                 //startBaseLayerAnimation(JSON.parse(req.responseText));
             }
             // тут можно добавить else с обработкой ошибок запроса
@@ -70,7 +70,7 @@ function getBaseLayerList() {
             if (req.status === 200) {
                 // если статус 200 (ОК) - выдать ответ пользователю
                 //alert("Ответ сервера: " + req.responseText);
-                //console.log(req.responseText);
+                console.log(req.responseText);
                 layersAnimationController.initAnimationToolbar(JSON.parse(req.responseText));
             }
             // тут можно добавить else с обработкой ошибок запроса
@@ -134,12 +134,12 @@ Sandcastle.addToolbarMenu([{
 }, {
     text: 'Animation',
     onselect: function () {
-        layersAnimationController.showProgressBar();
+        layersAnimationController.showProgressToolbar();
         getBaseLayerList();
     }
 }, {
     text : 'Get Artifacts',
-    onselect : function ( ) {
+    onselect : function () {
         layersAnimationController.hideToolbar();
         getArtefactsList();
         Sandcastle.highlight(getArtefactsList);

@@ -96,7 +96,18 @@
         </table>
     </div>
 
-    <progress value="0" max="1" id="layersAnimationProgressBar" style="display:none"></progress>
+    <div id="layersAnimationProgressToolbar" style="display:none">
+        <table>
+            <tbody>
+            <tr><td>
+                <p id="layersAnimationProgressStage">Status</p>
+            </td></tr>
+            <tr><td>
+                <progress value="0" max="100" id="layersAnimationProgressBar"></progress>
+            </td></tr>
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script src="js/layers-animation.js"></script>

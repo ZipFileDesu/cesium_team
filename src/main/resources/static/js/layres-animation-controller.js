@@ -1,7 +1,10 @@
 var layersAnimationController = (function(){
 
     var toolbar = document.getElementById('animationToolbar');
+    var progressToolbar = document.getElementById('layerAnimationProgressToolbar');
     var progressBar = document.getElementById('layersAnimationProgressBar');
+    var progressStage = document.getElementById('layersAnimationProgressStage');
+
     var toolbarViewModel;
     var animationStartPauseBtn = document.getElementById('animationStartPauseBtn');
     var animationStartPauseBtnStatus = 0; // 0 - Start, 1 - Pause
@@ -68,13 +71,13 @@ var layersAnimationController = (function(){
     }
 
     function initAnimationToolbar(layersList) {
-        setProgressBarMax(layersList.length);
+        console.log(layersList);
         setFrameIdxMax(layersList.length);
 
         layersAnimation.init(viewer, layersList,
-            layersAnimationController.setProgressBarValue,
+            setProgressToolbarValue,
             function() {
-                hideProgressBar();
+                hideProgressToolbar();
                 showToolbar();
             },
             animationStartPauseBtnToggle,
@@ -82,20 +85,23 @@ var layersAnimationController = (function(){
             toolbarViewModel.frameRate);
     }
 
-    function setProgressBarMax(value) {
-        progressBar.max = value;
-    }
-
-    function setProgressBarValue(value) {
+    function setProgressToolbarValue(value, stage) {
         progressBar.value = value;
+        if (stage) {
+            var stageToCaption = {
+                'load_images': 'Loading images',
+                'add_layers': 'Adding layers to the map',
+            };
+            progressStage.innerHTML = stageToCaption[stage];
+        }
     }
 
-    function showProgressBar() {
-        progressBar.style.display = 'block';
+    function showProgressToolbar() {
+        layersAnimationProgressToolbar.style.display = 'block';
     }
 
-    function hideProgressBar() {
-        progressBar.style.display = 'none';
+    function hideProgressToolbar() {
+        layersAnimationProgressToolbar.style.display = 'none';
     }
 
     function showToolbar() {
@@ -105,6 +111,7 @@ var layersAnimationController = (function(){
     function hideToolbar() {
         toolbar.style.display = 'none';
         layersAnimation.stop();
+        // TODO: ??? do we need to clear the added layers, or just hide them?
         layersAnimation.setLayersAlpha(0);
     }
 
@@ -118,10 +125,9 @@ var layersAnimationController = (function(){
         setFrameIdxValue: setFrameIdxValue,
 
         initAnimationToolbar: initAnimationToolbar,
-        setProgressBarMax: setProgressBarMax,
-        setProgressBarValue: setProgressBarValue,
-        showProgressBar: showProgressBar,
-        hideProgressBar: hideProgressBar,
+        setProgressToolbarValue: setProgressToolbarValue,
+        showProgressToolbar: showProgressToolbar,
+        hideProgressToolbar: hideProgressToolbar,
         showToolbar: showToolbar,
         hideToolbar: hideToolbar,
         bindToolbarData: bindToolbarData,
