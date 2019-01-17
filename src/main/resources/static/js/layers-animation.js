@@ -1,3 +1,7 @@
+/**
+ * Модель для работы с анимацей
+ * @type {{init, start, stop, pause, shiftFrame, toggleDirection, changeFrameRate, forceChangeFrameIdx, setLayersAlpha, clearAddedLayers}}
+ */
 var layersAnimation = (function() {
 
     var stepDirection;
@@ -18,6 +22,17 @@ var layersAnimation = (function() {
     var fileToLoadedImg = {};
     var baseLayers
 
+
+    /**
+     * Инициализирует модель
+     * @param viewer Cesium Viewer
+     * @param baseLayers Список подложек
+     * @param loadProgressCallback Функция, вызываемая при обновлении загрузки
+     * @param loadFinishCallback Функция, вызываемая при завершении загрузки
+     * @param _startPauseCallback Функция, которая вызовется при паузе анимации
+     * @param _frameIdxCallback Функция, которая вызывается при смене кадра. Вернёт новый кадр
+     * @param _frameRate Количество кадров в секунду
+     */
     function init(viewer, baseLayers, loadProgressCallback = function(){}, loadFinishCallback = function(){},
                   _startPauseCallback = function(){}, _frameIdxCallback = function(){}, _frameRate = 10) {
 
@@ -36,6 +51,9 @@ var layersAnimation = (function() {
         load(baseLayers, loadProgressCallback, loadFinishCallback);
     }
 
+    /**
+     * Очистка памяти. Удаляет добавленные подложки
+     */
     function clearAddedLayers() {
         console.log('clearAddedLayers');
         console.log(viewerImageryLayers);
@@ -51,6 +69,10 @@ var layersAnimation = (function() {
         layersArray = [];
     }
 
+    /**
+     * Присваивает значение alpha (прозрачности) всем подложкам
+     * @param alpha Новое значение
+     */
     function setLayersAlpha(alpha) {
         showFrame();
         for (var i = 0; i < layersArray.length; ++i) {
@@ -58,6 +80,12 @@ var layersAnimation = (function() {
         }
     }
 
+    /**
+     * Ассинхронно загружает изображения подложек
+     * @param baseLayers Список подложек
+     * @param loadProgressCallback Функция, вызываемая при обновлении загрузки
+     * @param loadFinishCallback Функция, вызываемая при завершении загрузки
+     */
     function loadImages(baseLayers, loadProgressCallback, loadFinishCallback) {
         var imagesLoadedCnt = 0;
         loadProgressCallback(0, 'load_images');
@@ -104,6 +132,12 @@ var layersAnimation = (function() {
         }
     }
 
+    /**
+     * Ассинхронно добавляет подложки на карту
+     * @param baseLayers Список подложек
+     * @param loadProgressCallback Функция, вызываемая при обновлении загрузки
+     * @param loadFinishCallback Функция, вызываемая при завершении загрузки
+     */
     function loadLayers(baseLayers, loadProgressCallback, loadFinishCallback) {
         var layersAddedCnt = 0;
         loadProgressCallback(0, 'add_layers');
@@ -141,6 +175,12 @@ var layersAnimation = (function() {
         }
     }
 
+    /**
+     * Ассинхронно загружает и добавляет подложки
+     * @param baseLayers Список подложек
+     * @param loadProgressCallback Функция, вызываемая при обновлении загрузки
+     * @param loadFinishCallback Функция, вызываемая при завершении загрузки
+     */
     function load(baseLayers, loadProgressCallback, loadFinishCallback) {
         layersArray = [];
         viewerImageryLayers = viewer.imageryLayers;
@@ -154,6 +194,10 @@ var layersAnimation = (function() {
             });
     }
 
+    /**
+     * Показывает кадр
+     * @param index Индекс (номер) кадра
+     */
     function showFrame(index=currentLayerIdx) {
         console.log('show frame ' + index);
         if (0 <= index && index < layersArray.length) {
@@ -162,6 +206,10 @@ var layersAnimation = (function() {
         }
     }
 
+    /**
+     * Сменя кадра
+     * @param shift Направление смены кадра
+     */
     function nextFrame(shift = 1) {
         currentLayerIdx += shift * stepDirection;
         if (currentLayerIdx === layersArray.length) {
@@ -173,6 +221,10 @@ var layersAnimation = (function() {
         frameIdxCallback(currentLayerIdx);
     }
 
+    /**
+     * Сдвигает один кадр. В случае активной анимации, останавливает анимацию.
+     * @param shift Направление смены кадра
+     */
     function shiftFrame(shift) {
         callback = function() {
             nextFrame(shift);
@@ -187,15 +239,27 @@ var layersAnimation = (function() {
         }
     }
 
+    /**
+     * Меняет номер кадра
+     * @param index Индекс (номер) кадра
+     */
     function forceChangeFrameIdx(index) {
         currentLayerIdx = index;
         showFrame();
     }
 
+    /**
+     * Смена направления воспроизведения
+     * @param direction Новое направление
+     */
     function toggleDirection(direction) {
         stepDirection = -stepDirection;
     }
 
+    /**
+     * Начинает воспроизведение анимации
+     * @param throwCallbackFlg Показывает, нужно ли менять состояние кнопки "Start/Pause"
+     */
     function start(throwCallbackFlg = true) {
         pauseAnimationFlg = false;
         stopAnimationFlg = false;
@@ -206,6 +270,9 @@ var layersAnimation = (function() {
         animate();
     }
 
+    /**
+     * Останавливает анимацию и возвращает на первый кадр
+     */
     function stop() {
         if (animationActiveFlg) {
             stopAnimationFlg = true;
@@ -218,6 +285,10 @@ var layersAnimation = (function() {
         }
     }
 
+    /**
+     * Приостанавливает анимацию
+     * @param throwCallbackFlg Показывает, нужно ли менять состояние кнопки "Start/Pause"
+     */
     function pause(throwCallbackFlg = true) {
         pauseAnimationFlg = true;
         if (throwCallbackFlg) {
@@ -225,11 +296,20 @@ var layersAnimation = (function() {
         }
     }
 
+    /**
+     * Меняем количество кадров в секунду (FPS)
+     * @param _frameRate Новое значение количество кадров в секунду (FPS)
+     */
     function changeFrameRate(_frameRate) {
         frameRate = _frameRate;
         frameRateChangedFlg = true;
     }
 
+    /**
+     * Запускаем анимацию. Эта функция, которая будет вызывать смену кадров в зависимости от FPS
+     * @see nextFrame
+     * @see showFrame
+     */
     function animate() {
         animationActiveFlg = true;
         var refreshIntervalId = setInterval(function() {
