@@ -30,7 +30,7 @@
 
         #toolbar {
             background: rgba(42, 42, 42, 0.8);
-            padding: 4px;
+            padding: 6px;
             border-radius: 4px;
         }
         #toolbar input {
@@ -48,8 +48,18 @@
         }
 
         .button-size{
-            height:20px;
-            width:60px;
+            height: 20px;
+            width: 60px;
+        }
+
+        .progressBar-size{
+            width: 200px;
+            margin-bottom: 10px;
+        }
+
+        .progressBar-padding{
+            margin-top: 1px;
+            margin-bottom: 1px;
         }
 
     </style>
@@ -105,10 +115,10 @@
         <table>
             <tbody>
             <tr><td>
-                <p id="layersAnimationProgressStage">Status</p>
+                <p class="progressBar-padding" id="layersAnimationProgressStage">Status</p>
             </td></tr>
             <tr><td>
-                <progress value="0" max="100" id="layersAnimationProgressBar"></progress>
+                <progress class="progressBar-size" value="0" max="100" id="layersAnimationProgressBar"></progress>
             </td></tr>
             </tbody>
         </table>
